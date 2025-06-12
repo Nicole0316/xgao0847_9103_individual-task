@@ -83,7 +83,7 @@ A common trick for smooth periodic animation is to use the sine of the frame cou
 - Pac-Man 'mouth' animation: 
 Using the above technique, the arc drawn with arc(x, y, w, h, startAngle, endAngle, PIE) will look like a Pac-Man mouth chomping. When sin(frameCount * 0.1) is 0, startAngle equals the base angle (biteSize), and when sin is ±1, startAngle reaches its min or max, making the mouth fully closed or fully open. The community forum example shows this in action – as frameCount increases, sin makes the mouth angle pivot back and forth smoothly. This approach doesn’t require manual angle toggling; the mathematical sine wave handles the continuous transition.
 
-- Why the user implemented this: 
+- Why I implemented this: 
 I adopted the sin-based arc animation to create a dynamic visual effect beyond static shapes. It produces a smooth, looping open-close motion (like the classic Pac-Man Waka-Waka) with minimal code. This technique is mentioned in p5.js tutorials and community sketches because it’s an elegant way to animate properties over time. By referencing a known example of Pac-Man’s mouth animated with sin(frameCount), I can justify that this oscillating arc pattern is a well-established practice for lively animations in p5.js.
 
 [Rotate arc in pacman animation](https://discourse.processing.org/t/rotate-arc-in-pacman-animation/45367)
