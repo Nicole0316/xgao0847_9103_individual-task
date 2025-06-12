@@ -100,8 +100,35 @@ function draw() {
     fill(b.colour);
     rect(b.col * grid, b.row * grid, b.w * grid, b.h * grid);
   });
+
+  // Move Pac-Man
+  if (checkNextPos(pacman.ang, { x: pacman.x, y: pacman.y }, pacman.speed)) {
+    if (pacman.ang == 270) {
+      pacman.y = pacman.y - pacman.speed; // 
+    } else if (pacman.ang == 0) {
+      pacman.x = pacman.x + pacman.speed; // 
+    } else if (pacman.ang == 90) {
+      pacman.y = pacman.y + pacman.speed; // 
+    } else if (pacman.ang == 180) {
+      pacman.x = pacman.x - pacman.speed; // 
+    }
+  } else {
+    // 
+    if (pacman.ang == 270) {
+      pacman.ang = 90;
+    } else if (pacman.ang == 0) {
+      pacman.ang = 180;
+    } else if (pacman.ang == 90) {
+      pacman.ang = 270;
+    } else if (pacman.ang == 180) {
+      pacman.ang = 0;
+    }
+  }
+
+  drawPacMan(pacman.x, pacman.y, pacman.c, pacman.ang);
 }
 
+// Draw colored rectangles on the grid line
 function colourDashesOnLines() {
   let accent = [colour.Y, colour.R, colour.B, colour.G];
 
@@ -122,4 +149,38 @@ function colourDashesOnLines() {
       }
     }
   });
+}
+
+// Pac-Man function
+function drawPacMan(x, y, c, ang) {
+  push();
+  translate(x, y);
+  rotate(ang);
+  fill(c);
+  // 
+  let timeInSeconds = frameCount / 60;
+  let mouthAngle = map(sin(timeInSeconds * 360), -1, 1, 10, 40);
+  // 
+  arc(0, 0, grid - 2, grid - 2, mouthAngle, 360 - mouthAngle);
+  pop();
+}
+
+// 
+function checkAllAround(pos, speed) {
+  // 
+  let col1 = get(pos.x, pos.y - grid / 2 - speed); // up
+  let col2 = get(pos.x + grid / 2 + speed, pos.y); // right
+  let col3 = get(pos.x, pos.y + grid / 2 + speed); // down
+  let col4 = get(pos.x - grid / 2 - speed, pos.y); // left
+
+  //
+  const condition1 = crossingPosX.includes(pos.x);
+  const condition2 = crossingPosY.includes(pos.y);
+  //
+  const condition3 = compareColor(col1, yellowRgbColor);
+  const condition4 = compareColor(col2, yellowRgbColor);
+  const condition5 = compareColor(col3, yellowRgbColor);
+  const condition6 = compareColor(col4, yellowRgbColor);
+
+  return condition1 && condition2 && condition3 && condition4 && condition5 && condition6;
 }
