@@ -118,13 +118,13 @@ function draw() {
       f.deadTime = millis(); // Record the time when it was eaten
       pacman.c = f.c; // Change the color of Pac-Man
     }
-    // The food reappeared five seconds later
-    if (f.deadTime > 0 && millis() - f.deadTime > 5000) {
+    // The food reappeared ten seconds later
+    if (f.deadTime > 0 && millis() - f.deadTime > 10000) {
       f.deadTime = 0;
     }
   });
 
-  // Pac-Man
+  // Draw Pac-Man
   drawPacMan(pacman.x, pacman.y, pacman.c, pacman.ang);
 
   // If Pac-Man is at the intersection and the area around is passable, change direction randomly
@@ -167,26 +167,26 @@ function drawPacMan(x, y, c, ang) {
   translate(x, y);
   rotate(ang);
   fill(c);
-  // 
+  // Calculate the opening and closing Angle of the mouth
   let timeInSeconds = frameCount / 60;
   let mouthAngle = map(sin(timeInSeconds * 360), -1, 1, 10, 40);
-  // 
+  // Draw the shape of Pac-Man
   arc(0, 0, grid - 2, grid - 2, mouthAngle, 360 - mouthAngle);
   pop();
 }
 
-// 
+// Check whether Pac-Man is passable all around
 function checkAllAround(pos, speed) {
-  // 
+  // Obtain the colors in four directions
   let col1 = get(pos.x, pos.y - grid / 2 - speed); // up
   let col2 = get(pos.x + grid / 2 + speed, pos.y); // right
   let col3 = get(pos.x, pos.y + grid / 2 + speed); // down
   let col4 = get(pos.x - grid / 2 - speed, pos.y); // left
 
-  //
+  // Check if it is at the intersection
   const condition1 = crossingPosX.includes(pos.x);
   const condition2 = crossingPosY.includes(pos.y);
-  //
+  // Check whether all four directions are yellow (passable)
   const condition3 = compareColor(col1, yellowRgbColor);
   const condition4 = compareColor(col2, yellowRgbColor);
   const condition5 = compareColor(col3, yellowRgbColor);
