@@ -1,6 +1,8 @@
-// Canvas grid configuration
+// Define grid size
 let grid  = 20;
+// Define canva width
 let wide = 34 * grid;
+// Define canvas height (the same as the width)
 let height = wide;
 
 // Colour palette
@@ -45,19 +47,23 @@ let foods = []
 
 function setup() {
   createCanvas(wide, height);
-  angleMode(DEGREES);  // Important for Pac-Man rotation later
 
-  yellowRgbColor = color(246, 230, 75); // Used to detect grid walls
+  // Set the Angle mode to degrees
+  angleMode(DEGREES);
 
+  // Convert yellow to RGB value
+  yellowRgbColor = color(246, 230, 75);
+
+  // Initialize the position of the food
   let accent = [colour.R, colour.B, colour.G];
-
+  // Add food on the vertical line
   vLines.forEach((c) => {
     crossingPosX.push(c * grid + 10);
     for (let y = 10; y < height; y += grid) {
       foods.push({ x: c * grid + 10, y: y, c: random(accent), deadTime: 0 });
     }
   });
-
+  // Add food on the horizontal line
   hLines.forEach((r) => {
     crossingPosY.push(r * grid + 10);
     for (let x = 10; x < wide; x += grid) {
@@ -70,50 +76,24 @@ function draw() {
   background(colour.W);
   noStroke();
   
-  // Draw yellow grid lines
+  // Draw grid lines
   fill(colour.Y);
-  vLines.forEach(c => rect(c * grid, 0, grid, height));
-  hLines.forEach(r => rect(0, r * grid, wide, grid));
-
-  // Render and handle food pellets
-  foods.forEach(f => {
-    if (f.deadTime == 0) {
-      fill(f.c);
-      noStroke();
-      ellipse(f.x, f.y, 4, 4); // Draw foods as small dot
-    }
-    
-    // Detect collision between pacman and food
-    if (dist(f.x, f.y, pacman.x, pacman.y) < 10) {
-      f.deadTime = millis(); // Mark as eaten
-      pacman.c = f.c; // Pac-Man changes to food color
-    }
-
-    // Respawn food after 5 seconds
-    if (f.deadTime > 0 && millis() - f.deadTime > 5000) {
-      f.deadTime = 0;
-    }
-  });
-
-  // Draw Blocks
-  blocks.forEach(b => {
-    fill(b.colour);
-    rect(b.col * grid, b.row * grid, b.w * grid, b.h * grid);
-  });
+  vLines.forEach(c => rect(c * grid, 0, grid, height)); // vertical line
+  hLines.forEach(r => rect(0, r * grid, wide, grid)); // horizontal line
 
   // Move Pac-Man
   if (checkNextPos(pacman.ang, { x: pacman.x, y: pacman.y }, pacman.speed)) {
     if (pacman.ang == 270) {
-      pacman.y = pacman.y - pacman.speed; // 
+      pacman.y = pacman.y - pacman.speed; // up
     } else if (pacman.ang == 0) {
-      pacman.x = pacman.x + pacman.speed; // 
+      pacman.x = pacman.x + pacman.speed; // right
     } else if (pacman.ang == 90) {
-      pacman.y = pacman.y + pacman.speed; // 
+      pacman.y = pacman.y + pacman.speed; // down
     } else if (pacman.ang == 180) {
-      pacman.x = pacman.x - pacman.speed; // 
+      pacman.x = pacman.x - pacman.speed; // left
     }
   } else {
-    // 
+    // If can't move forward, change direction
     if (pacman.ang == 270) {
       pacman.ang = 90;
     } else if (pacman.ang == 0) {
@@ -125,7 +105,37 @@ function draw() {
     }
   }
 
+  // Draw foods
+  foods.forEach(f => {
+    if (f.deadTime == 0) {
+      fill(f.c);
+      noStroke();
+      ellipse(f.x, f.y, 4, 4); // Foods
+    }
+
+    // Detect whether Pac-Man has eaten food
+    if (dist(f.x, f.y, pacman.x, pacman.y) < 10) {
+      f.deadTime = millis(); // Record the time when it was eaten
+      pacman.c = f.c; // Change the color of Pac-Man
+    }
+    // The food reappeared five seconds later
+    if (f.deadTime > 0 && millis() - f.deadTime > 5000) {
+      f.deadTime = 0;
+    }
+  });
+
+  // Pac-Man
   drawPacMan(pacman.x, pacman.y, pacman.c, pacman.ang);
+
+  // If Pac-Man is at the intersection and the area around is passable, change direction randomly
+  if (checkAllAround({ x: pacman.x, y: pacman.y }, pacman.speed)) {
+    pacman.ang = random([0, 90, 180, 270]);
+  }
+
+  blocks.forEach(b => {
+    fill(b.colour);
+    rect(b.col * grid, b.row * grid, b.w * grid, b.h * grid);
+  });
 }
 
 // Draw colored rectangles on the grid line
@@ -183,4 +193,34 @@ function checkAllAround(pos, speed) {
   const condition6 = compareColor(col4, yellowRgbColor);
 
   return condition1 && condition2 && condition3 && condition4 && condition5 && condition6;
+}
+
+// Check whether the next position is passable
+function checkNextPos(ang, pos, speed) {
+  if (ang == 270) {
+    // up
+    let col = get(pos.x, pos.y - grid / 2 - speed);
+    return compareColor(col, yellowRgbColor);
+  } else if (ang == 0) {
+    // right
+    let col = get(pos.x + grid / 2 + speed, pos.y);
+    return compareColor(col, yellowRgbColor);
+  } else if (ang == 90) {
+    // down
+    let col = get(pos.x, pos.y + grid / 2 + speed);
+    return compareColor(col, yellowRgbColor);
+  } else if (ang == 180) {
+    // left
+    let col = get(pos.x - grid / 2 - speed, pos.y);
+    return compareColor(col, yellowRgbColor);
+  }
+}
+
+// Compare whether the two colors are the same
+function compareColor(col, col2) {
+  return (
+    red(col) == red(col2) &&
+    green(col) == green(col2) &&
+    blue(col) == blue(col2)
+  );
 }
