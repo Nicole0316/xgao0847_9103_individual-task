@@ -89,3 +89,5 @@ I adopted the sin-based arc animation to create a dynamic visual effect beyond s
 [Rotate arc in pacman animation](https://discourse.processing.org/t/rotate-arc-in-pacman-animation/45367)
 
 ---
+
+My site is live at https://nicole0316.github.io/xgao0847_9103_individual-task/
