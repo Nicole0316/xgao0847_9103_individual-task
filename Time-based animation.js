@@ -5,12 +5,13 @@ let height = wide;
 
 // Colour palette
 let colour = {
-  W : '#ffffff',
-  Y : '#f6e64b',
-  R : '#b33025',
-  B : '#2d59b5',
-  G : '#d8d8d8',
+  W : '#ffffff', // white
+  Y : '#f6e64b', // yellow
+  R : '#b33025', //red
+  B : '#2d59b5', //blue
+  G : '#d8d8d8', //grey
 };
+let yellowRgbColor;
 
 // Grid line positions
 let vLines = [1, 3, 7, 12, 21, 29, 32];
@@ -36,19 +37,16 @@ let blocks = [
 
 function setup() {
   createCanvas(wide, height);
-  noLoop();
 }
 
 function draw() {
   background(colour.W);
+  noStroke();
   
   // Draw yellow grid lines
   fill(colour.Y);
   vLines.forEach(c => rect(c * grid, 0, grid, height));
   hLines.forEach(r => rect(0, r * grid, wide, grid));
-  
-  // Draw decorative dashes along grid lines
-  colourDashesOnLines();
   
   // Draw Blocks
   blocks.forEach(b => {
