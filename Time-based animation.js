@@ -45,6 +45,25 @@ let foods = []
 
 function setup() {
   createCanvas(wide, height);
+  angleMode(DEGREES);  // Important for Pac-Man rotation later
+
+  yellowRgbColor = color(246, 230, 75); // Used to detect grid walls
+
+  let accent = [colour.R, colour.B, colour.G];
+
+  vLines.forEach((c) => {
+    crossingPosX.push(c * grid + 10);
+    for (let y = 10; y < height; y += grid) {
+      foods.push({ x: c * grid + 10, y: y, c: random(accent), deadTime: 0 });
+    }
+  });
+
+  hLines.forEach((r) => {
+    crossingPosY.push(r * grid + 10);
+    for (let x = 10; x < wide; x += grid) {
+      foods.push({ x: x, y: r * grid + 10, c: random(accent), deadTime: 0 });
+    }
+  });
 }
 
 function draw() {
@@ -55,7 +74,27 @@ function draw() {
   fill(colour.Y);
   vLines.forEach(c => rect(c * grid, 0, grid, height));
   hLines.forEach(r => rect(0, r * grid, wide, grid));
-  
+
+  // Render and handle food pellets
+  foods.forEach(f => {
+    if (f.deadTime == 0) {
+      fill(f.c);
+      noStroke();
+      ellipse(f.x, f.y, 4, 4); // Draw foods as small dot
+    }
+    
+    // Detect collision between pacman and food
+    if (dist(f.x, f.y, pacman.x, pacman.y) < 10) {
+      f.deadTime = millis(); // Mark as eaten
+      pacman.c = f.c; // Pac-Man changes to food color
+    }
+
+    // Respawn food after 5 seconds
+    if (f.deadTime > 0 && millis() - f.deadTime > 5000) {
+      f.deadTime = 0;
+    }
+  });
+
   // Draw Blocks
   blocks.forEach(b => {
     fill(b.colour);
