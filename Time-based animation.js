@@ -35,6 +35,14 @@ let blocks = [
   {col: 15, row: 28, w: 1, h: 1, colour: colour.B},
 ];
 
+// Pac-Man Object with position, angle, speed, and color
+let pacman = { x: 100, y: 30, ang: 0, speed: 1, c: colour.R };
+// Crossing point positions used to control random direction
+let crossingPosX = [];
+let crossingPosY = [];
+// Food pellets array
+let foods = []
+
 function setup() {
   createCanvas(wide, height);
 }
