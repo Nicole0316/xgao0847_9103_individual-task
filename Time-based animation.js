@@ -1,3 +1,4 @@
+// Canvas grid configuration
 let grid  = 20;
 let wide = 34 * grid;
 let height = wide;
@@ -11,10 +12,11 @@ let colour = {
   G : '#d8d8d8',
 };
 
-// Grid
+// Grid line positions
 let vLines = [1, 3, 7, 12, 21, 29, 32];
 let hLines = [1, 5, 11, 13, 16, 19, 27, 32];
 
+// Block definitions
 let blocks = [
   {col: 1, row:  4, w: 1, h: 1, colour: colour.G},
   {col: 1, row: 10, w: 3, h: 3, colour: colour.R},
@@ -40,12 +42,12 @@ function setup() {
 function draw() {
   background(colour.W);
   
-  // Draw lines
+  // Draw yellow grid lines
   fill(colour.Y);
   vLines.forEach(c => rect(c * grid, 0, grid, height));
   hLines.forEach(r => rect(0, r * grid, wide, grid));
   
-  // Draw Dots
+  // Draw decorative dashes along grid lines
   colourDashesOnLines();
   
   // Draw Blocks
